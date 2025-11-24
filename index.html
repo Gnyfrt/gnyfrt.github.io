@@ -1,183 +1,200 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Dilara İçin Vitamin Hatırlatma 💖</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dilara'nın Mini Çalışma Alanı 💗</title>
+
 <style>
-  :root{--pink:#ff3e92;--light:#ffe0ef}
   body{
     margin:0;
-    background:#fff5fa;
     font-family:system-ui;
+    background:#fff4fa;
+    display:flex;
+    justify-content:center;
+    padding:30px;
+  }
+
+  .container{
+    width:360px;
+  }
+
+  .clock{
+    text-align:center;
+    font-size:26px;
+    font-weight:700;
+    margin-bottom:20px;
+    color:#c03675;
+    text-shadow:0 0 8px rgba(255,100,160,.3);
+  }
+
+  h2{
+    margin:10px 0 5px;
+    color:#a72960;
+    font-size:20px;
+  }
+
+  /* task list */
+  .taskbox{
+    background:white;
+    padding:16px;
+    border-radius:14px;
+    box-shadow:0 6px 20px rgba(255,0,120,.12);
+    margin-bottom:22px;
+  }
+
+  .task-item{
     display:flex;
     align-items:center;
-    justify-content:center;
-    height:100vh;
-    color:#3a1f2f;
+    margin:6px 0;
   }
-  .box{
-    width:340px;
-    background:white;
-    padding:24px;
-    border-radius:20px;
-    text-align:center;
-    box-shadow:0 10px 30px rgba(255,60,150,0.18);
+
+  .task-item input{
+    width:17px;height:17px;cursor:pointer;
   }
-  h1{
-    margin:8px 0 4px;
-    color:#b03060;
+
+  .task-item span{
+    margin-left:10px;
+    font-size:15px;
   }
-  p{color:#6a4a58;font-size:14px}
-  button{
-    padding:14px 20px;
-    font-size:16px;
-    font-weight:700;
-    border:none;
-    border-radius:12px;
-    background:var(--pink);
+
+  .task-item.done span{
+    text-decoration:line-through;
+    color:#777;
+  }
+
+  .addbox{
+    display:flex;
+    margin-top:10px;
+  }
+  .addbox input{
+    flex:1;
+    padding:8px;
+    border-radius:10px;
+    border:1px solid #e8b7c7;
+  }
+  .addbox button{
+    margin-left:8px;
+    background:#ff4d8d;
     color:white;
-    box-shadow:0 12px 24px rgba(255,50,140,.25);
+    border:0;
+    padding:8px 12px;
+    border-radius:10px;
     cursor:pointer;
   }
 
-  /* FULLSCREEN EFFECT */
-  .fx-container{
-    position:fixed;
-    inset:0;
-    background:rgba(255,0,120,0.12);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    pointer-events:none;
-    opacity:0;
-    transition:opacity .3s;
+  /* notepad */
+  .note{
+    background:white;
+    padding:16px;
+    border-radius:14px;
+    box-shadow:0 6px 20px rgba(255,0,120,.12);
   }
-  .fx-container.show{
-    opacity:1;
+  .note textarea{
+    width:100%;
+    height:130px;
+    border-radius:10px;
+    border:1px solid #e8b7c7;
+    padding:10px;
+    resize:none;
+    font-family:inherit;
   }
-
-  /* glow patlaması */
-  .glow{
-    position:absolute;
-    width:260px;
-    height:260px;
-    border-radius:50%;
-    background:radial-gradient(circle, rgba(255,90,160,1) 0%, rgba(255,90,160,0) 70%);
-    animation: glowpop .8s ease-out forwards;
-    filter:blur(8px);
+  .note button{
+    margin-top:8px;
+    background:#ff4d8d;
+    border:0;
+    padding:8px 12px;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
   }
-
-  @keyframes glowpop{
-    0%{transform:scale(.4);opacity:0;}
-    40%{transform:scale(1.4);opacity:1;}
-    100%{transform:scale(2.4);opacity:0;}
-  }
-
-  /* büyük kalp */
-  .big-heart{
-    font-size:120px;
-    opacity:0;
-    transform:scale(.4);
-    animation: heartpop 1s ease-out forwards;
-  }
-  @keyframes heartpop{
-    0%{opacity:0;transform:scale(.3);}
-    50%{opacity:1;transform:scale(1.2);}
-    80%{transform:scale(.9);}
-    100%{transform:scale(1);}
-  }
-
-  /* yazı */
-  .love-text{
-    margin-top:20px;
-    font-size:28px;
-    font-weight:800;
-    text-align:center;
-    color:#ff2f8a;
-    opacity:0;
-    transform:translateY(20px);
-    animation: loveshow 1s .3s ease-out forwards;
-    text-shadow:0 0 18px rgba(255,120,180,.8);
-  }
-
-  @keyframes loveshow{
-    to{opacity:1;transform:translateY(0);}
-  }
-
-  /* konfeti */
-  .confetti-piece{
-    position:fixed;
-    width:10px;
-    height:14px;
-    background:#ff5fa8;
-    top:-20px;
-    animation: fall linear forwards;
-  }
-  @keyframes fall{
-    to{
-      transform:translateY(110vh) rotate(320deg);
-      opacity:0;
-    }
-  }
-
 </style>
+
 </head>
 <body>
 
-<div class="box">
-  <h1>Dilaraaa 💗</h1>
-  <p>Vitaminini aldın mı acaba? Bir kontrol edelim bakalım 👇</p>
-  <button id="btn">✅ Aldım!</button>
+<div class="container">
+
+  <!-- SAAT -->
+  <div class="clock" id="clock">00:00</div>
+
+  <!-- TASKLAR -->
+  <h2>📚 Bugünkü Görevlerin</h2>
+  <div class="taskbox">
+    <div id="tasks"></div>
+
+    <div class="addbox">
+      <input id="newTask" placeholder="Yeni görev ekle…">
+      <button onclick="addTask()">Ekle</button>
+    </div>
+  </div>
+
+  <!-- NOTEPAD -->
+  <h2>📝 Küçük Not Defteri</h2>
+  <div class="note">
+    <textarea id="notepad" placeholder="Bugün ne çalıştın Dilara?"></textarea>
+    <button onclick="saveNote()">Kaydet</button>
+  </div>
+
 </div>
 
-<!-- FULLSCREEN EFFECT -->
-<div id="fx" class="fx-container"></div>
 
 <script>
-  const btn = document.getElementById("btn");
-  const fx = document.getElementById("fx");
+  /* SAAT ÇALIŞIYOR */
+  function updateClock(){
+    const now = new Date();
+    let h = now.getHours().toString().padStart(2,"0");
+    let m = now.getMinutes().toString().padStart(2,"0");
+    document.getElementById("clock").textContent = `${h}:${m}`;
+  }
+  setInterval(updateClock,1000); updateClock();
 
-  // bip sesi
-  const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-  function beep(){
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type="sine"; 
-    o.frequency.value=880;
-    g.gain.value=.06;
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); setTimeout(()=>o.stop(),150);
+
+  /* TASKS */
+  let tasks = JSON.parse(localStorage.getItem("dilaraTasks") || "[]");
+  const tasksEl = document.getElementById("tasks");
+
+  function renderTasks(){
+    tasksEl.innerHTML = "";
+    tasks.forEach((t,i)=>{
+      const row = document.createElement("div");
+      row.className = "task-item" + (t.done?" done":"");
+
+      row.innerHTML = `
+        <input type="checkbox" ${t.done?"checked":""} onclick="toggleTask(${i})">
+        <span>${t.text}</span>
+      `;
+
+      tasksEl.appendChild(row);
+    });
   }
 
-  function confettiBurst(){
-    for(let i=0;i<35;i++){
-      const c=document.createElement("div");
-      c.className="confetti-piece";
-      c.style.left=Math.random()*100+"vw";
-      c.style.background=["#ff5fa8","#ff9bc9","#ffd1e4","#ff7fb0"][Math.floor(Math.random()*4)];
-      c.style.animationDuration=(1.2+Math.random()*0.8)+"s";
-      document.body.appendChild(c);
-      setTimeout(()=>c.remove(),2000);
-    }
+  function addTask(){
+    let text = document.getElementById("newTask").value.trim();
+    if(!text) return;
+
+    tasks.push({text, done:false});
+    document.getElementById("newTask").value = "";
+    localStorage.setItem("dilaraTasks", JSON.stringify(tasks));
+    renderTasks();
   }
 
-  btn.addEventListener("click",()=>{
-    beep();
+  function toggleTask(i){
+    tasks[i].done = !tasks[i].done;
+    localStorage.setItem("dilaraTasks", JSON.stringify(tasks));
+    renderTasks();
+  }
 
-    fx.innerHTML = `
-      <div class="glow"></div>
-      <div class="big-heart">💖</div>
-      <div class="love-text">Seni çok seviyorum Dilara 💗<br> Böyle devam et!</div>
-    `;
+  renderTasks();
 
-    fx.classList.add("show");
 
-    confettiBurst();
+  /* NOTEPAD */
+  const note = document.getElementById("notepad");
+  note.value = localStorage.getItem("dilaraNote") || "";
 
-    // 1.5 saniye sonra efekt kendini biraz söndürsün
-    setTimeout(()=>fx.classList.remove("show"),1800);
-  })
+  function saveNote(){
+    localStorage.setItem("dilaraNote", note.value);
+  }
 </script>
 
 </body>
