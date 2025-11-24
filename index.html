@@ -1,200 +1,212 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dilara'nın Mini Çalışma Alanı 💗</title>
-
+<meta charset="UTF-8" />
+<title>Dilara İçin 💗</title>
 <style>
-  body{
-    margin:0;
-    font-family:system-ui;
-    background:#fff4fa;
-    display:flex;
-    justify-content:center;
-    padding:30px;
-  }
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        background: #ffe6f2;
+        color: #444;
+        text-align: center;
+        padding: 20px;
+    }
 
-  .container{
-    width:360px;
-  }
+    h1 {
+        margin-top: 10px;
+        font-size: 32px;
+        color: #ff3d8b;
+        text-shadow: 0 0 10px #ffb3d9;
+    }
 
-  .clock{
-    text-align:center;
-    font-size:26px;
-    font-weight:700;
-    margin-bottom:20px;
-    color:#c03675;
-    text-shadow:0 0 8px rgba(255,100,160,.3);
-  }
+    #clock {
+        font-size: 22px;
+        margin-bottom: 15px;
+        color: #ff6aa0;
+    }
 
-  h2{
-    margin:10px 0 5px;
-    color:#a72960;
-    font-size:20px;
-  }
+    button {
+        background: #ff4d94;
+        border: none;
+        padding: 15px 30px;
+        color: white;
+        font-size: 20px;
+        border-radius: 12px;
+        cursor: pointer;
+        box-shadow: 0 0 15px #ff9ac9;
+        transition: 0.2s;
+    }
 
-  /* task list */
-  .taskbox{
-    background:white;
-    padding:16px;
-    border-radius:14px;
-    box-shadow:0 6px 20px rgba(255,0,120,.12);
-    margin-bottom:22px;
-  }
+    button:hover {
+        transform: scale(1.05);
+    }
 
-  .task-item{
-    display:flex;
-    align-items:center;
-    margin:6px 0;
-  }
+    /* Heart animation */
+    .heart {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        font-size: 40px;
+        color: #ff2d78;
+        animation: pop 1.2s ease-out forwards;
+        white-space: nowrap;
+    }
 
-  .task-item input{
-    width:17px;height:17px;cursor:pointer;
-  }
+    @keyframes pop {
+        0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+        70% { transform: translate(-50%, -200%) scale(1.5); opacity: 1; }
+        100% { opacity: 0; transform: translate(-50%, -300%) scale(0.5); }
+    }
 
-  .task-item span{
-    margin-left:10px;
-    font-size:15px;
-  }
+    /* Task area */
+    #taskContainer {
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 15px #ffb0d4;
+    }
 
-  .task-item.done span{
-    text-decoration:line-through;
-    color:#777;
-  }
+    #taskContainer h2 {
+        color: #ff4d94;
+    }
 
-  .addbox{
-    display:flex;
-    margin-top:10px;
-  }
-  .addbox input{
-    flex:1;
-    padding:8px;
-    border-radius:10px;
-    border:1px solid #e8b7c7;
-  }
-  .addbox button{
-    margin-left:8px;
-    background:#ff4d8d;
-    color:white;
-    border:0;
-    padding:8px 12px;
-    border-radius:10px;
-    cursor:pointer;
-  }
+    .task {
+        display: flex;
+        justify-content: space-between;
+        background: #ffe6f7;
+        padding: 10px;
+        margin: 6px 0;
+        border-radius: 8px;
+    }
 
-  /* notepad */
-  .note{
-    background:white;
-    padding:16px;
-    border-radius:14px;
-    box-shadow:0 6px 20px rgba(255,0,120,.12);
-  }
-  .note textarea{
-    width:100%;
-    height:130px;
-    border-radius:10px;
-    border:1px solid #e8b7c7;
-    padding:10px;
-    resize:none;
-    font-family:inherit;
-  }
-  .note button{
-    margin-top:8px;
-    background:#ff4d8d;
-    border:0;
-    padding:8px 12px;
-    color:white;
-    border-radius:10px;
-    cursor:pointer;
-  }
+    .delBtn {
+        background: #ff2e63;
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    /* Günün mesajı kutusu */
+    #dailyMsgBox {
+        background: white;
+        padding: 18px;
+        border-radius: 15px;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 450px;
+        font-size: 18px;
+        box-shadow: 0 0 12px #ffb3d9;
+        color: #ff2d78;
+        line-height: 1.4;
+    }
 </style>
-
 </head>
+
 <body>
 
-<div class="container">
+<h1>Dilara Uygur 💗</h1>
+<div id="clock"></div>
 
-  <!-- SAAT -->
-  <div class="clock" id="clock">00:00</div>
+<!-- Günün mesajı -->
+<div id="dailyMsgBox">Yükleniyor...</div>
+<button onclick="newMessage()" style="margin-bottom:20px; font-size:17px;">Yeni Mesaj 💌</button>
 
-  <!-- TASKLAR -->
-  <h2>📚 Bugünkü Görevlerin</h2>
-  <div class="taskbox">
+<button onclick="vitamin()">Vitaminimi Aldım 💊</button>
+
+<div id="taskContainer">
+    <h2>Ders Görevleri 📚</h2>
+    <input type="text" id="taskInput" placeholder="Görev ekle..." style="padding:10px; width:70%; border-radius:10px;">
+    <button onclick="addTask()" style="padding:10px 18px; font-size:16px;">Ekle</button>
     <div id="tasks"></div>
-
-    <div class="addbox">
-      <input id="newTask" placeholder="Yeni görev ekle…">
-      <button onclick="addTask()">Ekle</button>
-    </div>
-  </div>
-
-  <!-- NOTEPAD -->
-  <h2>📝 Küçük Not Defteri</h2>
-  <div class="note">
-    <textarea id="notepad" placeholder="Bugün ne çalıştın Dilara?"></textarea>
-    <button onclick="saveNote()">Kaydet</button>
-  </div>
-
 </div>
 
-
 <script>
-  /* SAAT ÇALIŞIYOR */
-  function updateClock(){
+// Saat
+function updateClock(){
     const now = new Date();
-    let h = now.getHours().toString().padStart(2,"0");
-    let m = now.getMinutes().toString().padStart(2,"0");
-    document.getElementById("clock").textContent = `${h}:${m}`;
-  }
-  setInterval(updateClock,1000); updateClock();
+    document.getElementById("clock").innerText = now.toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
+updateClock();
 
+// Günün mesajları
+const messages = [
+    "Bugün çok güzelsin, haberin olsun 😍",
+    "Seninle konuşmak bile günü güzelleştiriyor 💗",
+    "Küçük adımlar da ilerlemedir, aferin sana 🧠✨",
+    "Her zaman yanındayım, unutma 💞",
+    "Derslerde yorulsan da sen bu işi halledersin 💪",
+    "Sen gülünce vallahi dünyanın aydınlık seviyesi artıyor 😌",
+    "Kendine nazik ol bugün, olur mu? 🌸",
+    "İyi ki varsın Dilara, çok ciddiyim 💖",
+    "Bu mesaj random ama sevgim random değil 😎💗",
+    "Ne yaparsan yap çok tatlısın, canım sevgilim 💕"
+];
 
-  /* TASKS */
-  let tasks = JSON.parse(localStorage.getItem("dilaraTasks") || "[]");
-  const tasksEl = document.getElementById("tasks");
+// Sayfa açılınca rastgele mesaj
+function loadDailyMessage() {
+    const msg = messages[Math.floor(Math.random() * messages.length)];
+    document.getElementById("dailyMsgBox").innerText = msg;
+}
 
-  function renderTasks(){
-    tasksEl.innerHTML = "";
-    tasks.forEach((t,i)=>{
-      const row = document.createElement("div");
-      row.className = "task-item" + (t.done?" done":"");
+// Buton ile yeni mesaj
+function newMessage() {
+    let box = document.getElementById("dailyMsgBox");
+    box.style.opacity = 0;
+    setTimeout(() => {
+        box.innerText = messages[Math.floor(Math.random() * messages.length)];
+        box.style.opacity = 1;
+    }, 200);
+}
 
-      row.innerHTML = `
-        <input type="checkbox" ${t.done?"checked":""} onclick="toggleTask(${i})">
-        <span>${t.text}</span>
-      `;
+loadDailyMessage();
 
-      tasksEl.appendChild(row);
+// Vitamin animasyonu
+function vitamin() {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️ Seni çok seviyorum Dilaraaa ❤️";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1500);
+    alert("Aşko vitaminini aldığın için teşekkür ederiiim 💖");
+}
+
+// TASK SYSTEM
+let tasks = JSON.parse(localStorage.getItem("tasksDilara")) || [];
+
+function renderTasks() {
+    let taskDiv = document.getElementById("tasks");
+    taskDiv.innerHTML = "";
+    tasks.forEach((t, i) => {
+        taskDiv.innerHTML += `
+            <div class="task">
+                <span>${t}</span>
+                <button class="delBtn" onclick="delTask(${i})">Sil</button>
+            </div>
+        `;
     });
-  }
+}
 
-  function addTask(){
-    let text = document.getElementById("newTask").value.trim();
-    if(!text) return;
-
-    tasks.push({text, done:false});
-    document.getElementById("newTask").value = "";
-    localStorage.setItem("dilaraTasks", JSON.stringify(tasks));
+function addTask() {
+    let val = document.getElementById("taskInput").value;
+    if(val.trim() === "") return;
+    tasks.push(val);
+    localStorage.setItem("tasksDilara", JSON.stringify(tasks));
+    document.getElementById("taskInput").value = "";
     renderTasks();
-  }
+}
 
-  function toggleTask(i){
-    tasks[i].done = !tasks[i].done;
-    localStorage.setItem("dilaraTasks", JSON.stringify(tasks));
+function delTask(i) {
+    tasks.splice(i, 1);
+    localStorage.setItem("tasksDilara", JSON.stringify(tasks));
     renderTasks();
-  }
+}
 
-  renderTasks();
-
-
-  /* NOTEPAD */
-  const note = document.getElementById("notepad");
-  note.value = localStorage.getItem("dilaraNote") || "";
-
-  function saveNote(){
-    localStorage.setItem("dilaraNote", note.value);
-  }
+renderTasks();
 </script>
 
 </body>
