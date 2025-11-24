@@ -1,1 +1,162 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vitamin Hatırlatıcı 💊</title>
+<style>
+  :root{--bg:#fff8ef;--card:#ffffff;--accent:#ff8a65;--muted:#7a6b6b}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#fff8ef, #fff);display:flex;align-items:center;justify-content:center;height:100vh;color:#332;}
+  .wrap{width:340px;background:var(--card);border-radius:20px;box-shadow:0 10px 30px rgba(50,30,20,0.12);padding:22px;text-align:center;transform:translateY(0);transition:transform .25s}
+  h1{margin:6px 0 6px;font-size:20px}
+  p.small{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .pill{display:inline-block;padding:10px 16px;border-radius:999px;background:linear-gradient(90deg,#ffd9c6,#ffecdf);box-shadow:inset 0 -6px 12px rgba(255,138,101,0.12);font-weight:600;color:#8a3a2a;margin-bottom:10px}
+  button{appearance:none;border:0;padding:12px 18px;border-radius:12px;font-weight:700;cursor:pointer}
+  .btn-primary{background:var(--accent);color:white;box-shadow:0 8px 18px rgba(255,138,101,0.18)}
+  .btn-muted{background:#f2f2f2;color:#444;margin-left:8px}
+  .controls{margin-top:12px}
+  .status{margin-top:14px;font-size:14px;color:#3b3b3b}
+  .snooze{margin-top:10px;color:var(--muted);font-size:13px}
+  .heart{font-size:34px;display:block;margin:12px auto;opacity:0;transform:scale(.7);transition:all .4s}
+  .heart.show{opacity:1;transform:scale(1)}
+  /* confetti pieces */
+  .confetti-piece{position:fixed;pointer-events:none;z-index:9999}
+  footer{margin-top:14px;font-size:12px;color:var(--muted)}
+  a.smalllink{color:var(--accent);text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="pill">💊 Vitamin Hatırlatıcı</div>
+  <h1>Sevgiline Küçük Hatırlatma</h1>
+  <p class="small">Bugün vitaminini içtin mi? Hadi birlikte kontrol edelim — tek tıkla "Aldım!" de, sevgi dolu bir onay gelsin 😊</p>
 
+  <div id="mainArea">
+    <button id="takeBtn" class="btn-primary">✅ Aldım!</button>
+    <div class="controls">
+      <button id="snoozeBtn" class="btn-muted">⏰ Ertele (10 dk)</button>
+      <button id="remindBtn" class="btn-muted">🔁 Günlük Hatırlat</button>
+    </div>
+
+    <div class="status" id="statusText">Durum: <strong id="state">Bekleniyor</strong></div>
+    <div class="snooze" id="snoozeText"></div>
+
+    <div class="heart" id="heart">💖</div>
+  </div>
+
+  <footer>Hazır göndermek için: kopyala linkini WhatsApp'a yapıştır. • <a class="smalllink" href="#" id="shareExample">Örnek mesaj</a></footer>
+</div>
+
+<script>
+  // Basit ses (tiny beep)
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function beep(){
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = 880;
+    g.gain.value = 0.08;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); setTimeout(()=>{ o.stop(); }, 140);
+  }
+
+  const takeBtn = document.getElementById('takeBtn');
+  const snoozeBtn = document.getElementById('snoozeBtn');
+  const remindBtn = document.getElementById('remindBtn');
+  const stateEl = document.getElementById('state');
+  const snoozeText = document.getElementById('snoozeText');
+  const heart = document.getElementById('heart');
+  const shareExample = document.getElementById('shareExample');
+
+  // Local state (browser'da saklar)
+  function setState(s){
+    stateEl.textContent = s;
+    if(s === 'Alındı 🎉'){
+      heart.classList.add('show');
+      confettiBurst();
+    } else {
+      heart.classList.remove('show');
+    }
+  }
+
+  takeBtn.addEventListener('click', ()=>{
+    // mark as taken
+    localStorage.setItem('vitaminTaken', new Date().toISOString());
+    setState('Alındı 🎉');
+    beep();
+  });
+
+  snoozeBtn.addEventListener('click', ()=>{
+    // set snooze for 10 minutes
+    const t = Date.now() + 10*60*1000;
+    localStorage.setItem('vitaminSnooze', t);
+    updateSnooze();
+    // gentle feedback
+    setState('Ertelendi ⏰');
+  });
+
+  remindBtn.addEventListener('click', ()=>{
+    // toggle a daily reminder flag (just visual here)
+    const cur = localStorage.getItem('dailyRemind') === '1';
+    localStorage.setItem('dailyRemind', cur ? '0' : '1');
+    remindBtn.textContent = cur ? '🔁 Günlük Hatırlat' : '🔔 Günlük Hatırlat Aktif';
+  });
+
+  function updateSnooze(){
+    const s = localStorage.getItem('vitaminSnooze');
+    if(!s){ snoozeText.textContent = ''; return; }
+    const msLeft = s - Date.now();
+    if(msLeft <= 0){ localStorage.removeItem('vitaminSnooze'); snoozeText.textContent = ''; setState('Bekleniyor'); return; }
+    const m = Math.ceil(msLeft/60000);
+    snoozeText.textContent = `Erteleme aktif — ${m} dakika kaldı`;
+    // check again in 30s
+    setTimeout(updateSnooze, 30000);
+  }
+
+  // confetti (basit)
+  function confettiBurst(){
+    for(let i=0;i<12;i++){
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.left = (30 + Math.random()*280) + 'px';
+      el.style.top = '30px';
+      el.style.width = (6 + Math.random()*8) + 'px';
+      el.style.height = (8 + Math.random()*12) + 'px';
+      el.style.background = ['#ff8a65','#ffd54f','#ffb74d','#81c784','#4fc3f7'][Math.floor(Math.random()*5)];
+      el.style.transform = `rotate(${Math.random()*360}deg)`;
+      document.body.appendChild(el);
+      const dx = -50 + Math.random()*100;
+      const dy = 200 + Math.random()*220;
+      el.animate([
+        { transform: `translateY(0) rotate(0deg)`, opacity:1 },
+        { transform: `translate(${dx}px, ${dy}px) rotate(${360*Math.random()}deg)`, opacity:0 }
+      ], { duration: 1200+Math.random()*600, easing: 'cubic-bezier(.17,.67,.34,1)'});
+      setTimeout(()=>el.remove(), 2000);
+    }
+  }
+
+  // initial load
+  (function init(){
+    if(localStorage.getItem('vitaminTaken')){
+      setState('Alındı 🎉');
+    } else setState('Bekleniyor');
+    if(localStorage.getItem('dailyRemind')==='1') remindBtn.textContent = '🔔 Günlük Hatırlat Aktif';
+    updateSnooze();
+  })();
+
+  // example share message (opens WhatsApp web with prefilled text)
+  shareExample.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const url = location.href;
+    const text = encodeURIComponent(`Sana küçük bir hatırlatma yaptım: ${url} \nHadi bir bak :)`);
+    // open wa.me link (works on mobile + web)
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  });
+
+  // if user opened as file://, shareExample could still copy link
+  if(location.protocol === 'file:'){
+    shareExample.href = '#';
+    shareExample.title = 'Bu dosyayı önce internete yüklemelisin (GitHub Pages/Netlify gibi).';
+  }
+</script>
+</body>
+</html>
